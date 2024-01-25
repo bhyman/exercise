@@ -1,5 +1,7 @@
 import './App.css';
 
+import {data} from './fixture';
+
 const App = () => {
   return (
     <div className="App">
