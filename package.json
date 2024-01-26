@@ -1,7 +1,7 @@
 {
   "name": "vite-template-react",
   "version": "1.4.0",
-  "type":"module",
+  "type": "module",
   "scripts": {
     "start": "vite --port 3000 --open",
     "dev": "vite --port 3000 --open",
@@ -10,8 +10,15 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.6",
+    "@mui/material": "^5.15.6",
+    "@mui/x-date-pickers": "^6.19.2",
+    "material-react-table": "^2.9.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "recharts": "^2.10.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.6",
