@@ -10,7 +10,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 // Source: https://www.material-react-table.com/docs/guides/editing
 const Example = ({appendToData, data}) => {
-  const [validationErrors, setValidationErrors] = useState({});
 
   const columns = useMemo(
     () => [
@@ -24,15 +23,6 @@ const Example = ({appendToData, data}) => {
         header: 'First Name',
         muiEditTextFieldProps: {
           required: true,
-          error: !!validationErrors?.firstName,
-          helperText: validationErrors?.firstName,
-          //remove any previous validation errors when user focuses on the input
-          onFocus: () =>
-            setValidationErrors({
-              ...validationErrors,
-              firstName: undefined,
-            }),
-          //optionally add validation checking for onBlur or onChange
         },
       },
       {
@@ -40,14 +30,6 @@ const Example = ({appendToData, data}) => {
         header: 'Last Name',
         muiEditTextFieldProps: {
           required: true,
-          error: !!validationErrors?.lastName,
-          helperText: validationErrors?.lastName,
-          //remove any previous validation errors when user focuses on the input
-          onFocus: () =>
-            setValidationErrors({
-              ...validationErrors,
-              lastName: undefined,
-            }),
         },
       },
       {
@@ -56,14 +38,6 @@ const Example = ({appendToData, data}) => {
         muiEditTextFieldProps: {
           type: 'email',
           required: true,
-          error: !!validationErrors?.email,
-          helperText: validationErrors?.email,
-          //remove any previous validation errors when user focuses on the input
-          onFocus: () =>
-            setValidationErrors({
-              ...validationErrors,
-              email: undefined,
-            }),
         },
       },
       {
@@ -73,12 +47,10 @@ const Example = ({appendToData, data}) => {
         editSelectOptions: ['foo', 'bar'],
         muiEditTextFieldProps: {
           select: true,
-          error: !!validationErrors?.state,
-          helperText: validationErrors?.state,
         },
       },
     ],
-    [validationErrors],
+    [],
   );
 
   const deleteUser = (user) => {console.log(`deleted $(user)`, user)};
@@ -87,24 +59,12 @@ const Example = ({appendToData, data}) => {
 
   //CREATE action
   const handleCreateUser = async ({ values, table }) => {
-    const newValidationErrors = validateUser(values);
-    if (Object.values(newValidationErrors).some((error) => error)) {
-      setValidationErrors(newValidationErrors);
-      return;
-    }
-    setValidationErrors({});
     await createUser(values);
     table.setCreatingRow(null); //exit creating mode
   };
 
   //UPDATE action
   const handleSaveUser = async ({ values, table }) => {
-    const newValidationErrors = validateUser(values);
-    if (Object.values(newValidationErrors).some((error) => error)) {
-      setValidationErrors(newValidationErrors);
-      return;
-    }
-    setValidationErrors({});
     await updateUser(values);
     table.setEditingRow(null); //exit editing mode
   };
@@ -130,9 +90,7 @@ const Example = ({appendToData, data}) => {
         minHeight: '500px',
       },
     },
-    onCreatingRowCancel: () => setValidationErrors({}),
     onCreatingRowSave: handleCreateUser,
-    onEditingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleSaveUser,
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: 'flex', gap: '1rem' }}>
@@ -177,23 +135,4 @@ const Example = ({appendToData, data}) => {
 
 
 export default Example;
-
-const validateRequired = (value) => !!value.length;
-const validateEmail = (email) =>
-  !!email.length &&
-  email
-    .toLowerCase()
-    .match(
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    );
-
-function validateUser(user) {
-  return {
-    firstName: !validateRequired(user.firstName)
-      ? 'First Name is Required'
-      : '',
-    lastName: !validateRequired(user.lastName) ? 'Last Name is Required' : '',
-    email: !validateEmail(user.email) ? 'Incorrect Email Format' : '',
-  };
-}
 
