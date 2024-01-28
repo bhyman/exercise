@@ -1,99 +1,137 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState } from "react";
 import {
   MaterialReactTable,
-  // createRow,
+  createRow,
   useMaterialReactTable,
-} from 'material-react-table';
-import { Box, Button, IconButton, Tooltip } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+} from "material-react-table";
+import { Box, Button, IconButton, Tooltip } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 // Source: https://www.material-react-table.com/docs/guides/editing
-const Example = ({appendToData, data}) => {
-
+const Table = ({
+  data,
+  editDataById,
+  prependToData,
+  removeFromDataById,
+}) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'id',
+        header: "id",
+        accessorKey: "id",
         enableEditing: false,
-        Edit: () => null, //disable editing on this column and hide it, https://stackoverflow.com/a/77878877
+        visibleInShowHideMenu: false,
+        Edit: () => null, //Source: https://stackoverflow.com/a/77878877
       },
       {
-        accessorKey: 'source',
-        header: 'First Name',
+        accessorKey: "datetime",
+        header: "Event datetime",
         muiEditTextFieldProps: {
           required: true,
         },
       },
       {
-        accessorKey: 'content',
-        header: 'Last Name',
+        accessorKey: "source",
+        header: "Source",
         muiEditTextFieldProps: {
           required: true,
         },
       },
       {
-        accessorKey: 'topic',
-        header: 'Email',
+        accessorKey: "content",
+        header: "Content",
         muiEditTextFieldProps: {
-          type: 'email',
           required: true,
         },
       },
       {
-        accessorKey: 'state',
-        header: 'State',
-        editVariant: 'select',
-        editSelectOptions: ['foo', 'bar'],
+        accessorKey: "topic",
+        header: "Topic",
+        size: 100,
+        editVariant: "select",
+        // https://en.wikipedia.org/wiki/Topi%C4%87
+        editSelectOptions: [
+          "Ante Topić Mimara, Croatian art collector and philanthropist",
+          "Angelina Topić, Serbian high jumper",
+          "Biljana Topić, Serbian triple jumper",
+          "Borislav Topić, Bosnian football defender",
+          "Dado Topić, Croatian rock musician",
+          "Dragutin Topić, Serbian high jumper",
+          "Eldar Topić, Bosnian football player",
+          "Goran Topić, Serbian basketball coach and scout",
+          "Jadranko Topić, Yugoslav football striker",
+          "Jan Topić, Ecuadorian businessman and politician",
+          "Josip Topić, Bosnian-Herzegovinian football player",
+          "Joško Topić, Croatian tennis player",
+          "Milenko Topić, Serbian basketball coach and former player",
+          "Marko Topić, Bosnian football forward",
+          "Mira Topić, Croatian volleyball player",
+          "Mirko Topić, Serbian football player",
+          "Nikola Topić, Serbian basketball player",
+          "Ognjen Topic, Serbian-born American Muay Thai kickboxer",
+          "Velibor Topić, Bosnian and British actor",
+          "Željko Topić, Croatian civil servant",
+          "Topic, German DJ, producer and musician",
+        ],
         muiEditTextFieldProps: {
           select: true,
         },
+      },
+      {
+        accessorKey: "num_followers",
+        header: "Number of followers",
+        muiEditTextFieldProps: {
+          required: true,
+        },
+        size: 100,
+      },
+      {
+        accessorKey: "num_following",
+        header: "Number of following",
+        muiEditTextFieldProps: {
+          required: true,
+        },
+        size: 50,
       },
     ],
     [],
   );
 
-  const deleteUser = (user) => {console.log(`deleted $(user)`, user)};
-  const createUser = (values) => {console.log(`created $(values)`, values)};
-  const updateUser = (values) => {console.log(`updated $(values)`)};
-
-  //CREATE action
-  const handleCreateUser = async ({ values, table }) => {
-    await createUser(values);
+  const handleCreateRow = ({ values }) => {
+    prependToData({ ...values, id: Math.floor(Math.random() * 10000) + 5 });
     table.setCreatingRow(null); //exit creating mode
   };
 
-  //UPDATE action
-  const handleSaveUser = async ({ values, table }) => {
-    await updateUser(values);
+  const handleSaveRow = ({ values, row }) => {
+    editDataById(row.id, values);
     table.setEditingRow(null); //exit editing mode
   };
 
-  //DELETE action
   const openDeleteConfirmModal = (row) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteUser(row.original.id);
+    if (window.confirm("Are you sure you want to delete this data point?")) {
+      removeFromDataById(row.original.id);
     }
   };
 
   const table = useMaterialReactTable({
     columns,
     data,
-    initialState: { columnVisibility: { id: false } },
-    createDisplayMode: 'modal', // ('modal', and 'custom' are also available)
-    editDisplayMode: 'row', // ('modal', 'cell', 'table', and 'custom' are also available)
+    initialState: { columnVisibility: { id: false }, density: "compact" },
+    createDisplayMode: "modal", // ('modal', and 'custom' are also available)
+    editDisplayMode: "row", // ('modal', 'cell', 'table', and 'custom' are also available)
     enableEditing: true,
     getRowId: (row) => row.id,
     muiToolbarAlertBannerProps: undefined,
     muiTableContainerProps: {
       sx: {
-        minHeight: '500px',
+        minHeight: "300px",
       },
     },
-    onCreatingRowSave: handleCreateUser,
-    onEditingRowSave: handleSaveUser,
+    onCreatingRowSave: handleCreateRow,
+    onEditingRowSave: handleSaveRow,
     renderRowActions: ({ row, table }) => (
-      <Box sx={{ display: 'flex', gap: '1rem' }}>
+      <Box sx={{ display: "flex", gap: "1rem" }}>
         <Tooltip title="Edit">
           <IconButton onClick={() => table.setEditingRow(row)}>
             <EditIcon />
@@ -110,29 +148,20 @@ const Example = ({appendToData, data}) => {
       <Button
         variant="contained"
         onClick={() => {
-          table.setCreatingRow(true); //simplest way to open the create row modal with no default values
-          //or you can pass in a row object to set default values with the `createRow` helper function
-          // table.setCreatingRow(
-          //   createRow(table, {
-          //     //optionally pass in default values for the new row, useful for nested data or other complex scenarios
-          //   }),
-          // );
+          // table.setCreatingRow(true); //simplest way to open the create row modal with no default values
+          table.setCreatingRow(
+            createRow(table, {
+              datetime: new Date().toISOString(),
+            }),
+          );
         }}
       >
-        Create New Data Point
+        Prepend New Data Point
       </Button>
     ),
-    state: {
-      isLoading: false,
-      isSaving: false,
-      showAlertBanner: false,
-      showProgressBars: false,
-    },
   });
 
   return <MaterialReactTable table={table} />;
 };
 
-
 export default Example;
-
