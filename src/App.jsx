@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import "./App.css";
 
 import { fixtureData } from "./fixture";
-import {Table} from "./Table";
+import { Graph } from "./Graph";
+import { Table } from "./Table";
 
 const App = () => {
   const [data, setData] = useState(fixtureData);
@@ -23,12 +24,15 @@ const App = () => {
 
   return (
     <>
-    <Table
-      data={data}
-      editDataById={editDataById}
-      prependToData={prependToData}
-      removeFromDataById={removeFromDataById}
-    />
+      <Table
+        data={data}
+        editDataById={editDataById}
+        prependToData={prependToData}
+        removeFromDataById={removeFromDataById}
+      />
+      <div className="graph-container">
+        <Graph data={data} />
+      </div>
     </>
   );
 };
