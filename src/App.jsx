@@ -1,28 +1,8 @@
 import React, { useState } from "react";
-import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Modal,
-  TextField,
-  Button,
-} from "@mui/material";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
 import "./App.css";
 
 import { fixtureData } from "./fixture";
-import Example from "./JS";
+import {Table} from "./Table";
 
 const App = () => {
   const [data, setData] = useState(fixtureData);
@@ -42,12 +22,14 @@ const App = () => {
   };
 
   return (
-    <Example
+    <>
+    <Table
       data={data}
       editDataById={editDataById}
       prependToData={prependToData}
       removeFromDataById={removeFromDataById}
     />
+    </>
   );
 };
 

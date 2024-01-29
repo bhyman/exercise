@@ -9,7 +9,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 // Source: https://www.material-react-table.com/docs/guides/editing
-const Table = ({
+export const Table = ({
   data,
   editDataById,
   prependToData,
@@ -163,5 +163,3 @@ const Table = ({
 
   return <MaterialReactTable table={table} />;
 };
-
-export default Example;
