@@ -38,7 +38,7 @@ Actual total number of programming hours: 3.5
 
 This is greater than the 2 hour limit suggested in the exercise email, but in line with the 4 hour estimate provided to me by Laura B.
 
-# Development
+# Development/Execution
 
 After downloading/cloning the repo, install dependencies:
 
